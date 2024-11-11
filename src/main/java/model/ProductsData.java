@@ -1,4 +1,4 @@
-package data;
+package model;
 
 import java.text.DecimalFormat;
 
@@ -30,7 +30,7 @@ public class ProductsData {
 
     public String getMenuData() {
         String menuPay = new DecimalFormat("#,###").format(itemPrice);
-        return new StringBuilder().append(itemName).append(" ").append(menuPay).append("원 ").append(itemQuantity)
+        return new StringBuilder().append("- ").append(itemName).append(" ").append(menuPay).append("원 ").append(itemQuantity)
                 .append("개 ").append(itemPromotion).toString();
     }
 }

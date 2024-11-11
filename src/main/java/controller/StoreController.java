@@ -1,12 +1,16 @@
 package controller;
 
 import com.sun.tools.javac.Main;
+import common.InputMessage;
 import common.OutputMessage;
-import data.ProductsData;
-import data.PromotionsData;
+import model.OrderItem;
+import model.ProductsData;
+import model.PromotionsData;
 import java.io.InputStream;
 import java.util.List;
+import java.util.function.Consumer;
 import services.StoreService;
+import validator.Inputvalidator;
 import view.InputView;
 import view.OutputView;
 
@@ -25,16 +29,62 @@ public class StoreController {
         List<ProductsData> productsData = getProductsData();
         List<PromotionsData> promotionsData = getPromotionsData();
 
-        String menuList = menuGiveOrder(productsData);
+        while (true) {
+            List<OrderItem> menuList = menuGiveOrder(productsData);
+
+
+
+            if (menuBuyServiceEnd()) break;
+        }
+
+        // 프로모션 확인
+        // 멤버십 할인
+        // 출력 안내
     }
 
-    public String menuGiveOrder(List<ProductsData> productsData) {
+    private boolean menuBuyServiceEnd() {
+        return getCheckInput();
+    }
+
+    private void menuGive(List<ProductsData> productsData) {
         outputView.showPrompt(OutputMessage.INTRO_MESSAGE);
         outputView.skipLine();
         outputView.menuListPrint(productsData);
         outputView.skipLine();
+    }
 
-        return inputView.getInput();
+    private List<OrderItem> menuGiveOrder(List<ProductsData> productsData) {
+        menuGive(productsData);
+        outputView.showPrompt(InputMessage.USER_PURCHASE_PRODUCT);
+        return inputOrderItem();
+    }
+
+    private List<OrderItem> inputOrderItem() {
+        String inputOrderItems = getInput(Inputvalidator::validateProductsCheck);
+        return storeService.generateOrders(inputOrderItems);
+    }
+
+    private boolean getCheckInput() {
+        while (true) {
+            try {
+                return inputView.getCheckInput();
+            } catch (IllegalArgumentException e) {
+                outputView.printErrorMessage(e.getMessage());
+            }
+        }
+    }
+
+    private String getInput(Consumer<String> validator) {
+        while(true) {
+            try {
+                String input = inputView.getInput();
+                validator.accept(input);
+
+                return input;
+            } catch (IllegalArgumentException e) {
+                outputView.printErrorMessage(e.getMessage());
+            }
+        }
     }
 
     private List<ProductsData> getProductsData() {

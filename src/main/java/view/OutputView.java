@@ -2,13 +2,14 @@ package view;
 
 import common.InputMessage;
 import common.OutputMessage;
-import data.ProductsData;
+import model.ProductsData;
 import java.util.List;
 
 public class OutputView {
     public void showPrompt(InputMessage message) {
         System.out.println(message.getMessage());
     }
+
     public void showPrompt(OutputMessage message) {
         System.out.println(message.getMessage());
     }
