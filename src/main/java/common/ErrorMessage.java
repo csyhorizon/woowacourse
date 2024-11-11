@@ -1,16 +1,16 @@
 package common;
 
 public enum ErrorMessage {
-    NONE_INPUT("입력을 받지 못했습니다"),
-    NONE_PRODUCT("존재하지 않는 상품입니다"),
-    SOLD_OUT_PRODUCT("매진된 상품입니다"),
-    INVALID_INPUT("잘못된 형태의 입력입니다");
+    INVALID_PRODUCT_INPUT("올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요."),
+    NONE_PRODUCT("존재하지 않는 상품입니다. 다시 입력해 주세요."),
+    SOLD_OUT_PRODUCT("재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요."),
+    INVALID_INPUT("잘못된 입력입니다. 다시 입력해 주세요.");
 
 
     private final String message;
 
     ErrorMessage(String message) {
-        this.message = message;
+        this.message = "[ERROR] " + message;
     }
 
     public String getMessage() {
