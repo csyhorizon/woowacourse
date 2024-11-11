@@ -1,10 +1,12 @@
 package data;
 
+import java.text.DecimalFormat;
+
 public class ProductsData {
-    private String itemName;
-    private int itemPrice;
-    private int itemQuantity;
-    private String itemPromotion;
+    private final String itemName;
+    private final int itemPrice;
+    private final int itemQuantity;
+    private final String itemPromotion;
 
     private ProductsData(String itemName, int itemPrice, int itemQuantity, String itemPromotion) {
         this.itemName = itemName;
@@ -16,7 +18,7 @@ public class ProductsData {
     public static ProductsData of(String productsData) {
         String[] products = productsData.split(",");
 
-        if (products[3] == null) products[3] = "0";
+        if (products[3].equals("null")) products[3] = "";
 
         return new ProductsData(
                 products[0],
@@ -24,5 +26,11 @@ public class ProductsData {
                 Integer.parseInt(products[2]),
                 products[3]
         );
+    }
+
+    public String getMenuData() {
+        String menuPay = new DecimalFormat("#,###").format(itemPrice);
+        return new StringBuilder().append(itemName).append(" ").append(menuPay).append("원 ").append(itemQuantity)
+                .append("개 ").append(itemPromotion).toString();
     }
 }

@@ -1,6 +1,7 @@
 package controller;
 
 import com.sun.tools.javac.Main;
+import common.OutputMessage;
 import data.ProductsData;
 import data.PromotionsData;
 import java.io.InputStream;
@@ -10,9 +11,9 @@ import view.InputView;
 import view.OutputView;
 
 public class StoreController {
-    private InputView inputView;
-    private StoreService storeService;
-    private OutputView outputView;
+    private final InputView inputView;
+    private final StoreService storeService;
+    private final OutputView outputView;
 
     public StoreController(StoreService storeService) {
         this.inputView = new InputView();
@@ -23,6 +24,17 @@ public class StoreController {
     public void run() {
         List<ProductsData> productsData = getProductsData();
         List<PromotionsData> promotionsData = getPromotionsData();
+
+        String menuList = menuGiveOrder(productsData);
+    }
+
+    public String menuGiveOrder(List<ProductsData> productsData) {
+        outputView.showPrompt(OutputMessage.INTRO_MESSAGE);
+        outputView.skipLine();
+        outputView.menuListPrint(productsData);
+        outputView.skipLine();
+
+        return inputView.getInput();
     }
 
     private List<ProductsData> getProductsData() {
