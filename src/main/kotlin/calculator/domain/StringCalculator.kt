@@ -7,6 +7,7 @@ object StringCalculator {
             return 0;
         }
 
+        val numbers = Parser.parse(input)
         return 0;
     }
 }
