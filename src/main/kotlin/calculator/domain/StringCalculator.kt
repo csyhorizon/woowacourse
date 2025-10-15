@@ -8,6 +8,6 @@ object StringCalculator {
         }
 
         val numbers = Parser.parse(input)
-        return 0;
+        return numbers.sum();
     }
 }
