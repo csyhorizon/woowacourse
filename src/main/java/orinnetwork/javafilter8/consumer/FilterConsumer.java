@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
+import orinnetwork.javafilter8.config.RabbitConfig;
 import orinnetwork.javafilter8.dto.PostEvent;
 import orinnetwork.javafilter8.service.FilterService;
 
@@ -16,7 +17,7 @@ public class FilterConsumer {
 
     private final FilterService filterService;
 
-    @RabbitListener(queues = "filtering.queue")
+    @RabbitListener(queues = RabbitConfig.FILTER_QUEUE_NAME)
     public void handleFilteringMessage(PostEvent eventDto) {
 
         if (eventDto == null || eventDto.postId() == null) {
