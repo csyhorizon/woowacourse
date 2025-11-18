@@ -27,18 +27,35 @@ public class FilterService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
-        String title = post.getTitle();
-        String content = post.getContent();
-        String fullText = title + " " + content;
-
+        String fullText = post.getTitle() + " " + post.getContent();
         Set<KeywordType> foundTypes = engine.search(fullText);
 
-        if (foundTypes.isEmpty() || foundTypes.contains(KeywordType.PROFANITY)) {
-            post.update(post.getTitle(), post.getContent(), PostStatus.ACTIVE);
-            return;
+        PostStatus finalStatus = determinePostStatus(foundTypes);
+
+        post.update(post.getTitle(), post.getContent(), finalStatus);
+
+        saveFilterLogs(postId, finalStatus, foundTypes);
+    }
+
+    private PostStatus determinePostStatus(Set<KeywordType> foundTypes) {
+        if (foundTypes.isEmpty()) {
+            return PostStatus.ACTIVE;
         }
 
-        PostStatus finalStatus = PostStatus.ACTIVE;
+        boolean hasCriticalKeyword = foundTypes.stream()
+                .anyMatch(type -> type != KeywordType.PROFANITY);
+
+        if (hasCriticalKeyword) {
+            return PostStatus.REJECTED;
+        }
+
+        return PostStatus.ACTIVE;
+    }
+
+    private void saveFilterLogs(Long postId, PostStatus finalStatus, Set<KeywordType> foundTypes) {
+        if (foundTypes.isEmpty()) {
+            return;
+        }
 
         for (KeywordType reason : foundTypes) {
             FilterLog logEntry = FilterLog.builder()
@@ -46,9 +63,7 @@ public class FilterService {
                     .reasonType(reason)
                     .resultStatus(finalStatus)
                     .build();
-
             filterLogRepository.save(logEntry);
         }
     }
-
 }
