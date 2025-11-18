@@ -18,6 +18,14 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   rabbitmq:
+    listener:
+      simple:
+        acknowledge-mode: auto
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1000ms
+        default-requeue-rejected: false
     host: localhost
     port: 5672
     username: guest
